@@ -1,0 +1,11 @@
+name: "xxxx_website"
+navbar:
+  title: "xxxx_website"
+  left:
+    - text: "Accueil"
+      href: index.html
+    - text: "Statistiques"
+      href: stats.html
+    - text: "Analyse"
+      href: analysis.html
+output_dir: docs
