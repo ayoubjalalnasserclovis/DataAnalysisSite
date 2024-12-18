@@ -1,0 +1,18 @@
+---
+title: "Analyse de données"
+output: html_document
+---
+
+# Analyse de Données
+
+Ici, nous présentons des graphiques et analyses montrant le lien entre l’innovation (brevets) et la demande de compétences (offres d’emploi):
+
+- Graphiques bivariés (e.g., innovation vs. avg_wage)
+- Word cloud de compétences (pondéré par n_patents ou avg_wage)
+- Toute analyse créative...
+
+```{r}
+base_emp_inno <- readRDS("DATA/base_emp_inno.rds")
+# Example plot:
+# plot(base_emp_inno$n_patents, base_emp_inno$avg_wage, 
+#      xlab="Nombre de brevets", ylab="Salaire moyen", main="Innovation vs Salaire")
