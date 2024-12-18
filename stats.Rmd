@@ -1,0 +1,20 @@
+---
+title: "Statistiques descriptives"
+output: html_document
+---
+
+# Statistiques Descriptives
+
+Dans cette page, nous présentons les statistiques descriptives pour chaque base de données.
+
+## base_brevets
+
+(Ici insérez le code R et les résultats: min, median, max, etc. pour n_patents, et les top 5 valeurs pour firm_name, ipc_main_desc, addr_city_main, addr_dept_main.)
+
+## base_emp
+
+(Idem pour n_offres, avg_wage, et top 5 valeurs pour firm_name, sector_main, addr_dept_main.)
+
+## base_emp_inno
+
+(Idem pour n_patents, n_offres, avg_wage.)
