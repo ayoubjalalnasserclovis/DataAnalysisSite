@@ -1,1 +1,17 @@
+---
+title: "Accueil"
+output: html_document
+---
+
+# Bienvenue
+
+Bienvenue sur notre site !
+
+**Membres du groupe**:  
+- Jean Dupont  
+- Marie Durand
+
+Ce site contient:
+- Une [page de statistiques descriptives](stats.html)
+- Une [page d'analyse de données](analysis.html)
 
