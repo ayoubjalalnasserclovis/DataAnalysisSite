@@ -1,7 +1,13 @@
 ---
 title: "Statistiques Descriptives"
-output: html_document
+output:
+  html_document:
+    theme: flatly
+    highlight: textmate
+    toc: false
+    code_folding: hide
 ---
+
 # Statistiques Descriptives
 
 Cette page présente les statistiques descriptives pour les bases de données utilisées.
@@ -10,14 +16,12 @@ Cette page présente les statistiques descriptives pour les bases de données ut
 
 ### Statistiques Numériques
 
-```{r brevets-stats, echo=FALSE}
+```{r brevets-stats, echo=FALSE, warning=FALSE, message=FALSE}
 library(dplyr)
-library(knitr)
+library(DT)
 
-# Charger les données
 base_brevets <- readRDS("data/base_brevets.rds")
 
-# Statistiques descriptives
 brevets_stats <- base_brevets %>%
   summarize(
     Min = min(n_patents, na.rm = TRUE),
@@ -28,5 +32,4 @@ brevets_stats <- base_brevets %>%
     NA_Count = sum(is.na(n_patents))
   )
 
-# Afficher les résultats sous forme de tableau
-kable(brevets_stats)
+datatable(brevets_stats, options = list(pageLength = 5, autoWidth = TRUE))
