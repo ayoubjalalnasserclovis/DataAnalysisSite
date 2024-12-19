@@ -9,4 +9,11 @@ navbar:
       href: stats.html
     - text: "Analyse des Données"
       href: analysis.html
-
+output:
+  html_document:
+    css: styles.css
+    theme: flatly
+    highlight: textmate
+    toc: false
+    code_folding: hide
+    self_contained: true

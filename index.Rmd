@@ -1,20 +1,31 @@
+
 ---
-title: "Accueil"
-output: html_document
+title: "Analyse des Données"
+output:
+  html_document:
+    theme: flatly
+    highlight: textmate
+    toc: false
+    code_folding: hide
+    self_contained: true
 ---
 
-# Bienvenue sur notre site d'analyse
+# Analyse des Données
 
-Bienvenue sur le site où nous présentons les résultats de notre projet d'analyse de données.
+## Relation entre l'Innovation (Brevet) et Salaire Moyen
 
-## Membres du Groupe
+```{r analysis-plot, echo=FALSE, warning=FALSE, message=FALSE}
+library(dplyr)
+library(plotly)
+library(wordcloud2)
 
-- Nom Prénom 1
-- Nom Prénom 2
-- Nom Prénom 3
+base_emp_inno <- readRDS("data/base_emp_inno.rds")
 
-## Navigation
+p <- plot_ly(base_emp_inno, x = ~n_patents, y = ~avg_wage,
+             type = 'scatter', mode = 'markers',
+             marker = list(size=10, opacity=0.6)) %>%
+  layout(title = "Relation entre Nombre de Brevets et Salaire Moyen",
+         xaxis = list(title = "Nombre de Brevets"),
+         yaxis = list(title = "Salaire Moyen"))
 
-- [Statistiques Descriptives](stats.html)
-- [Analyse des Données](analysis.html)
-
+p

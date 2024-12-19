@@ -11,12 +11,12 @@
 
 
 
-<title>Accueil</title>
+<title>Analyse des Données</title>
 
 <script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
@@ -30,8 +30,17 @@
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
-<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet" />
+<script src="site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<script src="site_libs/plotly-binding-4.10.4/plotly.js"></script>
+<script src="site_libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="site_libs/crosstalk-1.2.1/css/crosstalk.min.css" rel="stylesheet" />
+<script src="site_libs/crosstalk-1.2.1/js/crosstalk.min.js"></script>
+<link href="site_libs/plotly-htmlwidgets-css-2.11.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="site_libs/plotly-main-2.11.1/plotly-latest.min.js"></script>
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -58,6 +67,7 @@ if (window.hljs) {
 
 
 
+<link rel="stylesheet" href="styles.css" type="text/css" />
 
 
 
@@ -216,6 +226,9 @@ $(document).ready(function () {
 </style>
 
 <!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
 
 
 
@@ -261,31 +274,28 @@ $(document).ready(function () {
 
 <div id="header">
 
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
 
 
-<h1 class="title toc-ignore">Accueil</h1>
+
+<h1 class="title toc-ignore">Analyse des Données</h1>
 
 </div>
 
 
-<div id="bienvenue-sur-notre-site-danalyse" class="section level1">
-<h1>Bienvenue sur notre site d’analyse</h1>
-<p>Bienvenue sur le site où nous présentons les résultats de notre
-projet d’analyse de données.</p>
-<div id="membres-du-groupe" class="section level2">
-<h2>Membres du Groupe</h2>
-<ul>
-<li>Nom Prénom 1</li>
-<li>Nom Prénom 2</li>
-<li>Nom Prénom 3</li>
-</ul>
-</div>
-<div id="navigation" class="section level2">
-<h2>Navigation</h2>
-<ul>
-<li><a href="stats.html">Statistiques Descriptives</a></li>
-<li><a href="analysis.html">Analyse des Données</a></li>
-</ul>
+<div id="analyse-des-données" class="section level1">
+<h1>Analyse des Données</h1>
+<div id="relation-entre-linnovation-brevet-et-salaire-moyen"
+class="section level2">
+<h2>Relation entre l’Innovation (Brevet) et Salaire Moyen</h2>
+<div class="plotly html-widget html-fill-item" id="htmlwidget-9ddc6e6f446b9e3777a3" style="width:672px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-9ddc6e6f446b9e3777a3">{"x":{"visdat":{"2be07b6d2273":["function () ","plotlyVisDat"]},"cur_data":"2be07b6d2273","attrs":{"2be07b6d2273":{"x":{},"y":{},"mode":"markers","marker":{"size":10,"opacity":0.59999999999999998},"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"title":"Relation entre Nombre de Brevets et Salaire Moyen","xaxis":{"domain":[0,1],"automargin":true,"title":"Nombre de Brevets"},"yaxis":{"domain":[0,1],"automargin":true,"title":"Salaire Moyen"},"hovermode":"closest","showlegend":false},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"mode":"markers","marker":{"color":"rgba(31,119,180,1)","size":10,"opacity":0.59999999999999998,"line":{"color":"rgba(31,119,180,1)"}},"type":"scatter","error_y":{"color":"rgba(31,119,180,1)"},"error_x":{"color":"rgba(31,119,180,1)"},"line":{"color":"rgba(31,119,180,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 
@@ -322,6 +332,11 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
 
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
