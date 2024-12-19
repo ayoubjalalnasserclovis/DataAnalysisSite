@@ -1,3 +1,4 @@
+# stats.Rmd
 ---
 title: "Statistiques Descriptives"
 output:
@@ -6,29 +7,14 @@ output:
     highlight: textmate
     toc: false
     code_folding: hide
+    self_contained: true
 ---
 
 # Statistiques Descriptives
 
-Cette page présente les statistiques descriptives pour les bases de données utilisées.
-
-## Base Brevets
-
-### Statistiques Numériques
-
-```{r brevets-stats, echo=FALSE, warning=FALSE, message=FALSE}
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
 library(dplyr)
 library(DT)
-
-
-top_firms <- base_brevets %>%
-  arrange(desc(n_patents)) %>%
-  head(5) %>%
-  select(firm_name, n_patents)
-
-datatable(top_firms, options = list(pageLength = 5, autoWidth = TRUE))
-
-
 
 base_brevets <- readRDS("data/base_brevets.rds")
 
@@ -42,4 +28,10 @@ brevets_stats <- base_brevets %>%
     NA_Count = sum(is.na(n_patents))
   )
 
-datatable(brevets_stats, options = list(pageLength = 5, autoWidth = TRUE))
+top_firms <- base_brevets %>%
+  arrange(desc(n_patents)) %>%
+  head(5) %>%
+  select(firm_name, n_patents)
+
+datatable(brevets_stats, caption = "Statistiques N_Patents", options = list(pageLength=5, autoWidth=TRUE))
+datatable(top_firms, caption = "Top 5 Firmes par N_Patents", options = list(pageLength=5, autoWidth=TRUE))
