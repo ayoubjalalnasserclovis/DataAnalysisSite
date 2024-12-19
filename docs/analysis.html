@@ -11,7 +11,7 @@
 
 
 
-<title>Analyse des Données</title>
+<title>Analyse des Données - Analyses Multiples</title>
 
 <script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -33,14 +33,8 @@
 <script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet" />
-<script src="site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
-<script src="site_libs/plotly-binding-4.10.4/plotly.js"></script>
-<script src="site_libs/typedarray-0.1/typedarray.min.js"></script>
-<link href="site_libs/crosstalk-1.2.1/css/crosstalk.min.css" rel="stylesheet" />
-<script src="site_libs/crosstalk-1.2.1/js/crosstalk.min.js"></script>
-<link href="site_libs/plotly-htmlwidgets-css-2.11.1/plotly-htmlwidgets.css" rel="stylesheet" />
-<script src="site_libs/plotly-main-2.11.1/plotly-latest.min.js"></script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -284,18 +278,872 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Analyse des Données</h1>
+<h1 class="title toc-ignore">Analyse des Données - Analyses
+Multiples</h1>
 
 </div>
 
+<div id="TOC">
+<ul>
+<li><a href="#analyses-multiples" id="toc-analyses-multiples">Analyses
+Multiples</a>
+<ul>
+<li><a href="#statistiques-descriptives-sur-n_patents-sans-na"
+id="toc-statistiques-descriptives-sur-n_patents-sans-na">1. Statistiques
+descriptives sur <code>n_patents</code> (sans NA)</a></li>
+<li><a href="#statistiques-descriptives-sur-avg_wage-sans-na"
+id="toc-statistiques-descriptives-sur-avg_wage-sans-na">2. Statistiques
+descriptives sur <code>avg_wage</code> (sans NA)</a></li>
+<li><a href="#histogramme-de-n_patents-sans-na"
+id="toc-histogramme-de-n_patents-sans-na">3. Histogramme de
+<code>n_patents</code> (sans NA)</a></li>
+<li><a href="#histogramme-de-avg_wage-sans-na"
+id="toc-histogramme-de-avg_wage-sans-na">4. Histogramme de
+<code>avg_wage</code> (sans NA)</a></li>
+<li><a href="#nuage-de-points-n_patents-vs-avg_wage-sans-na"
+id="toc-nuage-de-points-n_patents-vs-avg_wage-sans-na">5. Nuage de
+points <code>n_patents</code> vs <code>avg_wage</code> (sans
+NA)</a></li>
+<li><a href="#nuage-de-points-n_offres-vs-avg_wage-sans-na"
+id="toc-nuage-de-points-n_offres-vs-avg_wage-sans-na">6. Nuage de points
+<code>n_offres</code> vs <code>avg_wage</code> (sans NA)</a></li>
+<li><a href="#boxplot-de-n_patents-par-sector_main-sans-na"
+id="toc-boxplot-de-n_patents-par-sector_main-sans-na">7. Boxplot de
+<code>n_patents</code> par <code>sector_main</code> (sans NA)</a></li>
+<li><a href="#boxplot-de-avg_wage-par-sector_main-sans-na"
+id="toc-boxplot-de-avg_wage-par-sector_main-sans-na">8. Boxplot de
+<code>avg_wage</code> par <code>sector_main</code> (sans NA)</a></li>
+<li><a href="#top-10-firmes-par-n_patents-sans-na"
+id="toc-top-10-firmes-par-n_patents-sans-na">9. Top 10 Firmes par
+<code>n_patents</code> (sans NA)</a></li>
+<li><a href="#top-10-firmes-par-avg_wage-sans-na"
+id="toc-top-10-firmes-par-avg_wage-sans-na">10. Top 10 Firmes par
+<code>avg_wage</code> (sans NA)</a></li>
+<li><a
+href="#matrice-de-corrélation-entre-n_patents-n_offres-avg_wage-sans-na"
+id="toc-matrice-de-corrélation-entre-n_patents-n_offres-avg_wage-sans-na">11.
+Matrice de corrélation entre <code>n_patents</code>,
+<code>n_offres</code>, <code>avg_wage</code> (sans NA)</a></li>
+<li><a href="#régression-linéaire-n_patents-avg_wage-sans-na"
+id="toc-régression-linéaire-n_patents-avg_wage-sans-na">12. Régression
+linéaire: <code>n_patents</code> ~ <code>avg_wage</code> (sans
+NA)</a></li>
+<li><a href="#régression-linéaire-n_offres-n_patents-sans-na"
+id="toc-régression-linéaire-n_offres-n_patents-sans-na">13. Régression
+linéaire: <code>n_offres</code> ~ <code>n_patents</code> (sans
+NA)</a></li>
+<li><a href="#fréquence-des-addr_dept_main-sans-na"
+id="toc-fréquence-des-addr_dept_main-sans-na">14. Fréquence des
+<code>addr_dept_main</code> (sans NA)</a></li>
+<li><a href="#barplot-des-top-10-ipc_main_desc-par-fréquence-sans-na"
+id="toc-barplot-des-top-10-ipc_main_desc-par-fréquence-sans-na">15.
+Barplot des top 10 <code>ipc_main_desc</code> par fréquence (sans
+NA)</a></li>
+<li><a href="#histogramme-de-n_offres-sans-na"
+id="toc-histogramme-de-n_offres-sans-na">16. Histogramme de
+<code>n_offres</code> (sans NA)</a></li>
+<li><a href="#nuage-de-points-n_patents-vs-n_offres-sans-na"
+id="toc-nuage-de-points-n_patents-vs-n_offres-sans-na">17. Nuage de
+points <code>n_patents</code> vs <code>n_offres</code> (sans
+NA)</a></li>
+<li><a
+href="#boxplot-avg_wage-par-addr_dept_main-sans-na-top-10-départements"
+id="toc-boxplot-avg_wage-par-addr_dept_main-sans-na-top-10-départements">18.
+Boxplot <code>avg_wage</code> par <code>addr_dept_main</code> (sans NA,
+top 10 départements)</a></li>
+<li><a href="#top-5-addr_dept_main-par-salaire-moyen-avg_wage-sans-na"
+id="toc-top-5-addr_dept_main-par-salaire-moyen-avg_wage-sans-na">19. Top
+5 <code>addr_dept_main</code> par salaire moyen <code>avg_wage</code>
+(sans NA)</a></li>
+<li><a href="#top-5-ipc_main_desc-par-n_patents-moyen-sans-na"
+id="toc-top-5-ipc_main_desc-par-n_patents-moyen-sans-na">20. Top 5
+<code>ipc_main_desc</code> par <code>n_patents</code> moyen (sans
+NA)</a></li>
+</ul></li>
+</ul>
+</div>
 
-<div id="analyse-des-données" class="section level1">
-<h1>Analyse des Données</h1>
-<div id="relation-entre-linnovation-brevet-et-salaire-moyen"
+<div id="analyses-multiples" class="section level1">
+<h1>Analyses Multiples</h1>
+<p>Dans cette section, nous présentons au moins 20 analyses différentes
+sur la base de données <code>base_emp_inno</code>.<br />
+<strong>Note :</strong> Pour chaque analyse, les lignes contenant des
+valeurs manquantes (<code>NA</code>) dans les variables utilisées sont
+exclues avant de réaliser le calcul.</p>
+<div id="statistiques-descriptives-sur-n_patents-sans-na"
 class="section level2">
-<h2>Relation entre l’Innovation (Brevet) et Salaire Moyen</h2>
-<div class="plotly html-widget html-fill-item" id="htmlwidget-7d67ed10de297112bd57" style="width:672px;height:480px;"></div>
-<script type="application/json" data-for="htmlwidget-7d67ed10de297112bd57">{"x":{"visdat":{"2be045e2e63":["function () ","plotlyVisDat"]},"cur_data":"2be045e2e63","attrs":{"2be045e2e63":{"x":{},"y":{},"mode":"markers","marker":{"size":10,"opacity":0.59999999999999998},"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"title":"Relation entre Nombre de Brevets et Salaire Moyen","xaxis":{"domain":[0,1],"automargin":true,"title":"Nombre de Brevets"},"yaxis":{"domain":[0,1],"automargin":true,"title":"Salaire Moyen"},"hovermode":"closest","showlegend":false},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"mode":"markers","marker":{"color":"rgba(31,119,180,1)","size":10,"opacity":0.59999999999999998,"line":{"color":"rgba(31,119,180,1)"}},"type":"scatter","error_y":{"color":"rgba(31,119,180,1)"},"error_x":{"color":"rgba(31,119,180,1)"},"line":{"color":"rgba(31,119,180,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<h2>1. Statistiques descriptives sur <code>n_patents</code> (sans
+NA)</h2>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;">
+Min
+</th>
+<th style="text-align:right;">
+Median
+</th>
+<th style="text-align:right;">
+Mean
+</th>
+<th style="text-align:right;">
+Max
+</th>
+<th style="text-align:right;">
+SD
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+26.15293
+</td>
+<td style="text-align:right;">
+14788
+</td>
+<td style="text-align:right;">
+265.6242
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="statistiques-descriptives-sur-avg_wage-sans-na"
+class="section level2">
+<h2>2. Statistiques descriptives sur <code>avg_wage</code> (sans
+NA)</h2>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;">
+Min
+</th>
+<th style="text-align:right;">
+Median
+</th>
+<th style="text-align:right;">
+Mean
+</th>
+<th style="text-align:right;">
+Max
+</th>
+<th style="text-align:right;">
+SD
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+532.0385
+</td>
+<td style="text-align:right;">
+6e+05
+</td>
+<td style="text-align:right;">
+6862.386
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="histogramme-de-n_patents-sans-na" class="section level2">
+<h2>3. Histogramme de <code>n_patents</code> (sans NA)</h2>
+<p><img src="analysis_files/figure-html/hist-n_patents-1.png" width="672" /></p>
+</div>
+<div id="histogramme-de-avg_wage-sans-na" class="section level2">
+<h2>4. Histogramme de <code>avg_wage</code> (sans NA)</h2>
+<p><img src="analysis_files/figure-html/hist-avg_wage-1.png" width="672" /></p>
+</div>
+<div id="nuage-de-points-n_patents-vs-avg_wage-sans-na"
+class="section level2">
+<h2>5. Nuage de points <code>n_patents</code> vs <code>avg_wage</code>
+(sans NA)</h2>
+<p><img src="analysis_files/figure-html/scatter-patents-wage-1.png" width="672" /></p>
+</div>
+<div id="nuage-de-points-n_offres-vs-avg_wage-sans-na"
+class="section level2">
+<h2>6. Nuage de points <code>n_offres</code> vs <code>avg_wage</code>
+(sans NA)</h2>
+<p><img src="analysis_files/figure-html/scatter-offres-wage-1.png" width="672" /></p>
+</div>
+<div id="boxplot-de-n_patents-par-sector_main-sans-na"
+class="section level2">
+<h2>7. Boxplot de <code>n_patents</code> par <code>sector_main</code>
+(sans NA)</h2>
+<p><img src="analysis_files/figure-html/boxplot-patents-sector-1.png" width="672" /></p>
+</div>
+<div id="boxplot-de-avg_wage-par-sector_main-sans-na"
+class="section level2">
+<h2>8. Boxplot de <code>avg_wage</code> par <code>sector_main</code>
+(sans NA)</h2>
+<p><img src="analysis_files/figure-html/boxplot-wage-sector-1.png" width="672" /></p>
+</div>
+<div id="top-10-firmes-par-n_patents-sans-na" class="section level2">
+<h2>9. Top 10 Firmes par <code>n_patents</code> (sans NA)</h2>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+firm_name
+</th>
+<th style="text-align:right;">
+n_patents
+</th>
+<th style="text-align:right;">
+avg_wage
+</th>
+<th style="text-align:right;">
+n_offres
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+commissariatlnergieatomiqueetauxnergiesalternatives
+</td>
+<td style="text-align:right;">
+14788
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+alcatellucent
+</td>
+<td style="text-align:right;">
+10640
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+centrenationaldelarecherchescientifique
+</td>
+<td style="text-align:right;">
+9361
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+thomsonlicensing
+</td>
+<td style="text-align:right;">
+8824
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+centrenationaldelarecherchescientifiquecnrs
+</td>
+<td style="text-align:right;">
+7401
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+compagniegnraledesetablissementsmichelin
+</td>
+<td style="text-align:right;">
+6547
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+renaultsas
+</td>
+<td style="text-align:right;">
+6264
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+thales
+</td>
+<td style="text-align:right;">
+5791
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+loral
+</td>
+<td style="text-align:right;">
+4788
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+arkemafrance
+</td>
+<td style="text-align:right;">
+4779
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="top-10-firmes-par-avg_wage-sans-na" class="section level2">
+<h2>10. Top 10 Firmes par <code>avg_wage</code> (sans NA)</h2>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+firm_name
+</th>
+<th style="text-align:right;">
+avg_wage
+</th>
+<th style="text-align:right;">
+n_patents
+</th>
+<th style="text-align:right;">
+n_offres
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+LA RELÈVE
+</td>
+<td style="text-align:right;">
+600000.00
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+LITY
+</td>
+<td style="text-align:right;">
+80000.00
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+DANEM PEOPLE FRANCE
+</td>
+<td style="text-align:right;">
+75000.00
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+OCDE
+</td>
+<td style="text-align:right;">
+70263.84
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ADONE CONSEIL
+</td>
+<td style="text-align:right;">
+70000.00
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CEB
+</td>
+<td style="text-align:right;">
+68664.00
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NODYA GROUP
+</td>
+<td style="text-align:right;">
+65333.33
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ADAPT RH
+</td>
+<td style="text-align:right;">
+60000.00
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+KAINO
+</td>
+<td style="text-align:right;">
+60000.00
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PMU
+</td>
+<td style="text-align:right;">
+60000.00
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+3
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div
+id="matrice-de-corrélation-entre-n_patents-n_offres-avg_wage-sans-na"
+class="section level2">
+<h2>11. Matrice de corrélation entre <code>n_patents</code>,
+<code>n_offres</code>, <code>avg_wage</code> (sans NA)</h2>
+<p><img src="analysis_files/figure-html/correlation-matrix-1.png" width="672" /></p>
+</div>
+<div id="régression-linéaire-n_patents-avg_wage-sans-na"
+class="section level2">
+<h2>12. Régression linéaire: <code>n_patents</code> ~
+<code>avg_wage</code> (sans NA)</h2>
+<pre><code>## 
+## Call:
+## lm(formula = n_patents ~ avg_wage, data = .)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+##   -26.3   -24.3   -22.3   -17.3 14761.7 
+## 
+## Coefficients:
+##               Estimate Std. Error t value
+## (Intercept) 26.3101471  2.2719830  11.580
+## avg_wage    -0.0002955  0.0003301  -0.895
+##             Pr(&gt;|t|)    
+## (Intercept)   &lt;2e-16 ***
+## avg_wage       0.371    
+## ---
+## Signif. codes:  
+##   0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39;
+##   0.1 &#39; &#39; 1
+## 
+## Residual standard error: 265.6 on 13749 degrees of freedom
+## Multiple R-squared:  5.828e-05,  Adjusted R-squared:  -1.445e-05 
+## F-statistic: 0.8013 on 1 and 13749 DF,  p-value: 0.3707</code></pre>
+</div>
+<div id="régression-linéaire-n_offres-n_patents-sans-na"
+class="section level2">
+<h2>13. Régression linéaire: <code>n_offres</code> ~
+<code>n_patents</code> (sans NA)</h2>
+<pre><code>## 
+## Call:
+## lm(formula = n_offres ~ n_patents, data = .)
+## 
+## Residuals:
+##    Min     1Q Median     3Q    Max 
+## -0.223 -0.222 -0.222 -0.222 66.777 
+## 
+## Coefficients:
+##               Estimate Std. Error t value
+## (Intercept)  2.226e-01  1.756e-02  12.679
+## n_patents   -8.174e-05  6.579e-05  -1.242
+##             Pr(&gt;|t|)    
+## (Intercept)   &lt;2e-16 ***
+## n_patents      0.214    
+## ---
+## Signif. codes:  
+##   0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39;
+##   0.1 &#39; &#39; 1
+## 
+## Residual standard error: 2.049 on 13749 degrees of freedom
+## Multiple R-squared:  0.0001123,  Adjusted R-squared:  3.953e-05 
+## F-statistic: 1.544 on 1 and 13749 DF,  p-value: 0.2141</code></pre>
+</div>
+<div id="fréquence-des-addr_dept_main-sans-na" class="section level2">
+<h2>14. Fréquence des <code>addr_dept_main</code> (sans NA)</h2>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+addr_dept_main
+</th>
+<th style="text-align:right;">
+n
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+75
+</td>
+<td style="text-align:right;">
+233
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+92
+</td>
+<td style="text-align:right;">
+109
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+59
+</td>
+<td style="text-align:right;">
+48
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+69
+</td>
+<td style="text-align:right;">
+31
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+44
+</td>
+<td style="text-align:right;">
+24
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+31
+</td>
+<td style="text-align:right;">
+23
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+33
+</td>
+<td style="text-align:right;">
+22
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+78
+</td>
+<td style="text-align:right;">
+16
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+94
+</td>
+<td style="text-align:right;">
+16
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+13
+</td>
+<td style="text-align:right;">
+13
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="barplot-des-top-10-ipc_main_desc-par-fréquence-sans-na"
+class="section level2">
+<h2>15. Barplot des top 10 <code>ipc_main_desc</code> par fréquence
+(sans NA)</h2>
+<p><img src="analysis_files/figure-html/bar-ipc-main-1.png" width="672" /></p>
+</div>
+<div id="histogramme-de-n_offres-sans-na" class="section level2">
+<h2>16. Histogramme de <code>n_offres</code> (sans NA)</h2>
+<p><img src="analysis_files/figure-html/hist-offres-1.png" width="672" /></p>
+</div>
+<div id="nuage-de-points-n_patents-vs-n_offres-sans-na"
+class="section level2">
+<h2>17. Nuage de points <code>n_patents</code> vs <code>n_offres</code>
+(sans NA)</h2>
+<p><img src="analysis_files/figure-html/scatter-patents-offres-1.png" width="672" /></p>
+</div>
+<div
+id="boxplot-avg_wage-par-addr_dept_main-sans-na-top-10-départements"
+class="section level2">
+<h2>18. Boxplot <code>avg_wage</code> par <code>addr_dept_main</code>
+(sans NA, top 10 départements)</h2>
+<p><img src="analysis_files/figure-html/boxplot-wage-dept-1.png" width="672" /></p>
+</div>
+<div id="top-5-addr_dept_main-par-salaire-moyen-avg_wage-sans-na"
+class="section level2">
+<h2>19. Top 5 <code>addr_dept_main</code> par salaire moyen
+<code>avg_wage</code> (sans NA)</h2>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+addr_dept_main
+</th>
+<th style="text-align:right;">
+mean_wage
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+21
+</td>
+<td style="text-align:right;">
+43333.33
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+15
+</td>
+<td style="text-align:right;">
+29768.86
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+6
+</td>
+<td style="text-align:right;">
+23295.91
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+72
+</td>
+<td style="text-align:right;">
+19375.00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+67
+</td>
+<td style="text-align:right;">
+18965.91
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="top-5-ipc_main_desc-par-n_patents-moyen-sans-na"
+class="section level2">
+<h2>20. Top 5 <code>ipc_main_desc</code> par <code>n_patents</code>
+moyen (sans NA)</h2>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+ipc_main_desc
+</th>
+<th style="text-align:right;">
+mean_patents
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+LIQUEFACTION, SOLIDIFICATION, OR SEPARATION OF GASES OR GASEOUS MIXTURES
+BY PRESSURE AND COLD TREATMENT (cryogenic pumps F04B0037080000; gas
+storage vessels, gas-holders F17; filling vessels with, or discharging
+from vessels, compressed, liquefied, or solidified gases F17C;
+refrigeration machines, plants, or systems F25B)
+</td>
+<td style="text-align:right;">
+1274.5000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CONJOINT CONTROL OF VEHICLE SUB-UNITS OF DIFFERENT TYPE OR DIFFERENT
+FUNCTION; CONTROL SYSTEMS SPECIALLY ADAPTED FOR HYBRID VEHICLES; ROAD
+VEHICLE DRIVE CONTROL SYSTEMS FOR PURPOSES NOT RELATED TO THE CONTROL OF
+A PARTICULAR SUB-UNIT
+</td>
+<td style="text-align:right;">
+538.4167
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NON-POSITIVE-DISPLACEMENT MACHINES OR ENGINES, e.g. STEAM TURBINES
+(combustion engines F02; machines or engines for liquids F03, F04;
+non-positive-displacement pumps F04D)
+</td>
+<td style="text-align:right;">
+498.2000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+VEHICLE TYRES (manufacture, repairing B29); TYRE INFLATION; TYRE
+CHANGING; CONNECTING VALVES TO INFLATABLE ELASTIC BODIES IN GENERAL;
+DEVICES OR ARRANGEMENTS RELATED TO TYRES (testing of tyres
+G01M0017020000)
+</td>
+<td style="text-align:right;">
+456.4118
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+JET-PROPULSION PLANTS (arrangement or mounting of jet-propulsion plants
+in land vehicles or vehicles in general B60K; arrangement or mounting of
+jet-propulsion plants in waterborne vessels B63H; controlling aircraft
+attitude, flight direction, or altitude by jet reaction B64C;
+arrangement or mounting of jet-propulsion plants in aircraft B64D;
+plants characterised by the power of the working fluid being divided
+between jet propulsion and another form of propulsion, e.g. propeller,
+F02B, F02C; features of jet-propulsion plants common to gas-turbine
+plants, air intakes or fuel supply control of air-breathing
+jet-propulsion plants F02C)
+</td>
+<td style="text-align:right;">
+288.0000
+</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p>Ces analyses montrent différentes relations, distributions et résumés
+statistiques, tout en excluant les valeurs manquantes afin de garantir
+que chaque analyse est basée sur des données complètes. Vous pouvez
+personnaliser davantage ces analyses selon vos besoins.</p>
 </div>
 </div>
 

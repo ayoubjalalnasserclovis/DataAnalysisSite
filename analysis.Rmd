@@ -1,31 +1,287 @@
 ---
-title: "Analyse des Données"
+title: "Analyse des Données - Analyses Multiples"
 output:
   html_document:
     theme: flatly
     highlight: textmate
-    toc: false
+    toc: true
     code_folding: hide
     self_contained: true
 ---
 
+# Analyses Multiples
 
-# Analyse des Données
+Dans cette section, nous présentons au moins 20 analyses différentes sur la base de données `base_emp_inno`.  
+**Note :** Pour chaque analyse, les lignes contenant des valeurs manquantes (`NA`) dans les variables utilisées sont exclues avant de réaliser le calcul.
 
-## Relation entre l'Innovation (Brevet) et Salaire Moyen
-
-```{r analysis-plot, echo=FALSE, warning=FALSE, message=FALSE}
+```{r setup, include=FALSE}
 library(dplyr)
+library(ggplot2)
+library(kableExtra)
 library(plotly)
 library(wordcloud2)
 
+# Load the dataset
 base_emp_inno <- readRDS("data/base_emp_inno.rds")
 
-p <- plot_ly(base_emp_inno, x = ~n_patents, y = ~avg_wage,
-             type = 'scatter', mode = 'markers',
-             marker = list(size=10, opacity=0.6)) %>%
-  layout(title = "Relation entre Nombre de Brevets et Salaire Moyen",
-         xaxis = list(title = "Nombre de Brevets"),
-         yaxis = list(title = "Salaire Moyen"))
+# Ensure all expected columns exist
+expected_cols <- c("firm_name", "n_patents", "n_offres", "avg_wage", "sector_main", "addr_dept_main.y", "ipc_main_desc")
+missing_cols <- setdiff(expected_cols, colnames(base_emp_inno))
+if (length(missing_cols) > 0) {
+  stop(paste("Missing columns:", paste(missing_cols, collapse = ", ")))
+}
 
-p
+# Clean the dataset and fix addr_dept_main
+base_emp_inno <- base_emp_inno %>%
+  rename(addr_dept_main = addr_dept_main.y) %>%
+  select(-addr_dept_main.x) %>%
+  mutate(
+    n_patents = ifelse(is.na(n_patents), 0, n_patents),
+    avg_wage = ifelse(is.na(avg_wage), 0, avg_wage),
+    n_offres = ifelse(is.na(n_offres), 0, n_offres),
+    addr_dept_main = as.character(addr_dept_main)
+  )
+```
+
+## 1. Statistiques descriptives sur `n_patents` (sans NA)
+
+```{r stats-n_patents, echo=FALSE}
+base_emp_inno %>%
+  filter(!is.na(n_patents)) %>%
+  summarize(
+    Min = min(n_patents),
+    Median = median(n_patents),
+    Mean = mean(n_patents),
+    Max = max(n_patents),
+    SD = sd(n_patents)
+  ) %>%
+  kable() %>%
+  kable_styling()
+```
+
+## 2. Statistiques descriptives sur `avg_wage` (sans NA)
+
+```{r stats-avg_wage, echo=FALSE}
+base_emp_inno %>%
+  filter(!is.na(avg_wage)) %>%
+  summarize(
+    Min = min(avg_wage),
+    Median = median(avg_wage),
+    Mean = mean(avg_wage),
+    Max = max(avg_wage),
+    SD = sd(avg_wage)
+  ) %>%
+  kable() %>%
+  kable_styling()
+```
+
+## 3. Histogramme de `n_patents` (sans NA)
+
+```{r hist-n_patents, echo=FALSE}
+base_emp_inno %>%
+  filter(!is.na(n_patents)) %>%
+  ggplot(aes(x = n_patents)) +
+  geom_histogram(fill="steelblue", color="white", bins=30) +
+  ggtitle("Distribution de n_patents (sans NA)")
+```
+
+## 4. Histogramme de `avg_wage` (sans NA)
+
+```{r hist-avg_wage, echo=FALSE}
+base_emp_inno %>%
+  filter(!is.na(avg_wage)) %>%
+  ggplot(aes(x = avg_wage)) +
+  geom_histogram(fill="darkgreen", color="white", bins=30) +
+  ggtitle("Distribution de avg_wage (sans NA)")
+```
+
+## 5. Nuage de points `n_patents` vs `avg_wage` (sans NA)
+
+```{r scatter-patents-wage, echo=FALSE}
+base_emp_inno %>%
+  filter(!is.na(n_patents), !is.na(avg_wage)) %>%
+  ggplot(aes(x = n_patents, y = avg_wage)) +
+  geom_point(alpha=0.7) +
+  ggtitle("n_patents vs avg_wage (sans NA)")
+```
+
+## 6. Nuage de points `n_offres` vs `avg_wage` (sans NA)
+
+```{r scatter-offres-wage, echo=FALSE}
+base_emp_inno %>%
+  filter(!is.na(n_offres), !is.na(avg_wage)) %>%
+  ggplot(aes(x = n_offres, y = avg_wage)) +
+  geom_point(color="purple", alpha=0.7) +
+  ggtitle("n_offres vs avg_wage (sans NA)")
+```
+
+## 7. Boxplot de `n_patents` par `sector_main` (sans NA)
+
+```{r boxplot-patents-sector, echo=FALSE}
+base_emp_inno %>%
+  filter(!is.na(n_patents), !is.na(sector_main)) %>%
+  ggplot(aes(x = sector_main, y = n_patents)) +
+  geom_boxplot() +
+  coord_flip() +
+  ggtitle("Boxplot n_patents par sector_main (sans NA)")
+```
+
+## 8. Boxplot de `avg_wage` par `sector_main` (sans NA)
+
+```{r boxplot-wage-sector, echo=FALSE}
+base_emp_inno %>%
+  filter(!is.na(avg_wage), !is.na(sector_main)) %>%
+  ggplot(aes(x = sector_main, y = avg_wage)) +
+  geom_boxplot(fill="orange") +
+  coord_flip() +
+  ggtitle("Boxplot avg_wage par sector_main (sans NA)")
+```
+
+## 9. Top 10 Firmes par `n_patents` (sans NA)
+
+```{r top10-firms-patents, echo=FALSE}
+base_emp_inno %>%
+  filter(!is.na(n_patents)) %>%
+  arrange(desc(n_patents)) %>%
+  head(10) %>%
+  select(firm_name, n_patents, avg_wage, n_offres) %>%
+  kable() %>%
+  kable_styling()
+```
+
+## 10. Top 10 Firmes par `avg_wage` (sans NA)
+
+```{r top10-firms-wage, echo=FALSE}
+base_emp_inno %>%
+  filter(!is.na(avg_wage)) %>%
+  arrange(desc(avg_wage)) %>%
+  head(10) %>%
+  select(firm_name, avg_wage, n_patents, n_offres) %>%
+  kable() %>%
+  kable_styling()
+```
+
+## 11. Matrice de corrélation entre `n_patents`, `n_offres`, `avg_wage` (sans NA)
+
+```{r correlation-matrix, echo=FALSE, warning=FALSE, message=FALSE}
+library(corrplot)
+
+df_corr <- base_emp_inno %>%
+  filter(!is.na(n_patents), !is.na(n_offres), !is.na(avg_wage)) %>%
+  select(n_patents, n_offres, avg_wage)
+
+M <- cor(df_corr)
+corrplot(M, method="circle", type="upper", tl.col="black")
+```
+
+## 12. Régression linéaire: `n_patents` ~ `avg_wage` (sans NA)
+
+```{r lm-patents-wage, echo=FALSE}
+lm1 <- base_emp_inno %>%
+  filter(!is.na(n_patents), !is.na(avg_wage)) %>%
+  lm(n_patents ~ avg_wage, data = .)
+
+summary(lm1)
+```
+
+## 13. Régression linéaire: `n_offres` ~ `n_patents` (sans NA)
+
+```{r lm-offres-patents, echo=FALSE}
+lm2 <- base_emp_inno %>%
+  filter(!is.na(n_offres), !is.na(n_patents)) %>%
+  lm(n_offres ~ n_patents, data = .)
+
+summary(lm2)
+```
+
+## 14. Fréquence des `addr_dept_main` (sans NA)
+
+```{r freq-addr_dept, echo=FALSE}
+base_emp_inno %>%
+  filter(!is.na(addr_dept_main)) %>%
+  count(addr_dept_main, sort=TRUE) %>%
+  head(10) %>%
+  kable() %>%
+  kable_styling()
+```
+
+## 15. Barplot des top 10 `ipc_main_desc` par fréquence (sans NA)
+
+```{r bar-ipc-main, echo=FALSE}
+ipc_count <- base_emp_inno %>%
+  filter(!is.na(ipc_main_desc)) %>%
+  count(ipc_main_desc, sort=TRUE) %>%
+  head(10)
+
+ggplot(ipc_count, aes(x = reorder(ipc_main_desc, n), y = n)) +
+  geom_col(fill="steelblue") +
+  coord_flip() +
+  ggtitle("Top 10 ipc_main_desc par fréquence (sans NA)")
+```
+
+## 16. Histogramme de `n_offres` (sans NA)
+
+```{r hist-offres, echo=FALSE}
+base_emp_inno %>%
+  filter(!is.na(n_offres)) %>%
+  ggplot(aes(x = n_offres)) +
+  geom_histogram(fill="red", color="white", bins=30) +
+  ggtitle("Distribution de n_offres (sans NA)")
+```
+
+## 17. Nuage de points `n_patents` vs `n_offres` (sans NA)
+
+```{r scatter-patents-offres, echo=FALSE}
+base_emp_inno %>%
+  filter(!is.na(n_patents), !is.na(n_offres)) %>%
+  ggplot(aes(x = n_patents, y = n_offres)) +
+  geom_point(alpha=0.7, color="darkblue") +
+  ggtitle("n_patents vs n_offres (sans NA)")
+```
+
+## 18. Boxplot `avg_wage` par `addr_dept_main` (sans NA, top 10 départements)
+
+```{r boxplot-wage-dept, echo=FALSE}
+top_dept <- base_emp_inno %>%
+  filter(!is.na(addr_dept_main)) %>%
+  count(addr_dept_main, sort=TRUE) %>%
+  head(10) %>%
+  pull(addr_dept_main)
+
+base_emp_inno %>%
+  filter(!is.na(avg_wage), !is.na(addr_dept_main), addr_dept_main %in% top_dept) %>%
+  ggplot(aes(x = addr_dept_main, y = avg_wage)) +
+  geom_boxplot() +
+  coord_flip() +
+  ggtitle("Boxplot avg_wage par addr_dept_main (top 10, sans NA)")
+```
+
+## 19. Top 5 `addr_dept_main` par salaire moyen `avg_wage` (sans NA)
+
+```{r top5-dept-wage, echo=FALSE}
+base_emp_inno %>%
+  filter(!is.na(avg_wage), !is.na(addr_dept_main)) %>%
+  group_by(addr_dept_main) %>%
+  summarize(mean_wage=mean(avg_wage)) %>%
+  arrange(desc(mean_wage)) %>%
+  head(5) %>%
+  kable() %>%
+  kable_styling()
+```
+
+## 20. Top 5 `ipc_main_desc` par `n_patents` moyen (sans NA)
+
+```{r top5-ipc-patents, echo=FALSE}
+base_emp_inno %>%
+  filter(!is.na(n_patents), !is.na(ipc_main_desc)) %>%
+  group_by(ipc_main_desc) %>%
+  summarize(mean_patents=mean(n_patents)) %>%
+  arrange(desc(mean_patents)) %>%
+  head(5) %>%
+  kable() %>%
+  kable_styling()
+```
+
+---
+
+Ces analyses montrent différentes relations, distributions et résumés statistiques, tout en excluant les valeurs manquantes afin de garantir que chaque analyse est basée sur des données complètes. Vous pouvez personnaliser davantage ces analyses selon vos besoins.
