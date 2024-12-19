@@ -10,3 +10,7 @@ navbar:
     - text: "Analyse des Données"
       href: analysis.html
 
+# Add a global CSS file
+output:
+  html_document:
+    css: styles.css
