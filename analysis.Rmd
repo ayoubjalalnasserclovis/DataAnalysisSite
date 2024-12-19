@@ -24,6 +24,17 @@ Dans cette section, nous présentons des relations entre l'innovation des entrep
 library(dplyr)
 library(plotly)
 
+
+library(wordcloud2)
+
+# Exemple de compétences (remplacez par vos données réelles)
+skills <- c("SQL", "Machine Learning", "R", "Python", "Spark", "Git", "Hadoop")
+freqs <- data.frame(word = skills, freq = sample(20:100, length(skills)))
+
+wordcloud2(freqs, size = 1)
+
+
+
 base_emp_inno <- readRDS("data/base_emp_inno.rds")
 
 plot_ly(base_emp_inno, x = ~n_patents, y = ~avg_wage, 
