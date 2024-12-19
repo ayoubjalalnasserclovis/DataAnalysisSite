@@ -1,3 +1,4 @@
+# _site.yml
 name: "DataAnalysisSite"
 output_dir: "docs"
 navbar:
@@ -10,7 +11,11 @@ navbar:
     - text: "Analyse des Données"
       href: analysis.html
 
-# Add a global CSS file
 output:
   html_document:
     css: styles.css
+    theme: flatly
+    highlight: textmate
+    toc: false
+    code_folding: hide
+    self_contained: true
