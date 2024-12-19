@@ -1,0 +1,19 @@
+name: "xxx
+---
+
+### **4. `_site.yml`**
+This file configures your website and links all the pages together. Save it in the root of your project.
+
+```yaml
+name: "DataAnalysisSite"
+output_dir: "docs"
+navbar:
+  title: "Analyse des Données"
+  left:
+    - text: "Accueil"
+      href: index.html
+    - text: "Statistiques Descriptives"
+      href: stats.html
+    - text: "Analyse des Données"
+      href: analysis.html
+

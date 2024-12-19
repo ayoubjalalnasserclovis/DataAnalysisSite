@@ -1,0 +1,73 @@
+
+---
+
+### **3. `analysis.Rmd`**
+This page provides the detailed data analysis and visualizations.
+
+```markdown
+---
+title: "Analyse des Données"
+output: html_document
+---
+
+# Analyse des Données
+
+Cette page explore les relations entre l'innovation des entreprises et la demande de compétences en data science.
+
+## Relation entre Innovation et Salaire Moyen
+
+```{r innovation-vs-salary, echo=FALSE}
+library(ggplot2)
+
+library(wordcloud)
+
+competences <- c("Data Science", "Machine Learning", "Big Data", "AI", "Statistiques")
+frequences <- c(50, 40, 30, 25, 20)
+
+wordcloud(competences, frequences, colors = rainbow(5))
+
+
+base_emp <- readRDS("data/base_emp.rds")
+
+ggplot(base_emp, aes(x = n_offres, y = avg_wage)) +
+  geom_point(color = "blue") +
+  labs(
+    title = "Relation entre le nombre d'offres et le salaire moyen",
+    x = "Nombre d'offres",
+    y = "Salaire moyen (€)"
+  )
+
+
+```{r base-brevets-stats, message=FALSE, warning=FALSE}
+install.packages(c("rmarkdown", "knitr", "dplyr", "ggplot2", "kableExtra", "tidyr", "readr", "lubridate", "scales"))
+library(rmarkdown)
+library(knitr)
+library(dplyr)
+library(ggplot2)
+
+
+# Charger la base de données
+base_brevets <- readRDS("data/base_brevets.rds")
+
+# Statistiques descriptives pour les variables numériques
+brevets_stats <- base_brevets %>%
+  summarize(
+    min_n_patents = min(n_patents, na.rm = TRUE),
+    median_n_patents = median(n_patents, na.rm = TRUE),
+    max_n_patents = max(n_patents, na.rm = TRUE),
+    mean_n_patents = mean(n_patents, na.rm = TRUE),
+    sd_n_patents = sd(n_patents, na.rm = TRUE),
+    na_n_patents = sum(is.na(n_patents))
+  )
+
+# Afficher les résultats
+kable(brevets_stats)
+
+# Top 5 firm_name par nombre de brevets
+top_firms <- base_brevets %>%
+  group_by(firm_name) %>%
+  summarize(total_patents = sum(n_patents, na.rm = TRUE)) %>%
+  arrange(desc(total_patents)) %>%
+  head(5)
+
+kable(top_firms)

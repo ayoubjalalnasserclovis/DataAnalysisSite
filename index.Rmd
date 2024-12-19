@@ -1,0 +1,20 @@
+---
+title: "Accueil"
+output: html_document
+---
+
+# Bienvenue sur notre site d'analyse
+
+Bienvenue sur le site où nous présentons les résultats de notre projet d'analyse de données.
+
+## Membres du Groupe
+
+- Nom Prénom 1
+- Nom Prénom 2
+- Nom Prénom 3
+
+## Navigation
+
+- [Statistiques Descriptives](stats.html)
+- [Analyse des Données](analysis.html)
+

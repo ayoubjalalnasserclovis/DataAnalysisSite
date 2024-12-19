@@ -1,0 +1,42 @@
+---
+title: "Statistiques Descriptives"
+output: html_document
+---
+
+# Statistiques Descriptives
+
+Cette page présente les statistiques descriptives pour les bases de données utilisées.
+
+## Base Brevets
+
+### Statistiques Numériques
+
+```{r brevets-stats, echo=FALSE}
+library(dplyr)
+library(knitr)
+
+
+top_5_firms <- base_brevets %>%
+  group_by(firm_name) %>%
+  summarize(Total_Patents = sum(n_patents, na.rm = TRUE)) %>%
+  arrange(desc(Total_Patents)) %>%
+  head(5)
+kable(top_5_firms)
+
+
+
+
+base_brevets <- readRDS("data/base_brevets.rds")
+
+# Statistiques descriptives
+brevets_stats <- base_brevets %>%
+  summarize(
+    Min = min(n_patents, na.rm = TRUE),
+    Median = median(n_patents, na.rm = TRUE),
+    Max = max(n_patents, na.rm = TRUE),
+    Mean = mean(n_patents, na.rm = TRUE),
+    SD = sd(n_patents, na.rm = TRUE),
+    NA_Count = sum(is.na(n_patents))
+  )
+kable(brevets_stats)
+
