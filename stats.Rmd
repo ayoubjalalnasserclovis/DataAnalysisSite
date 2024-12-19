@@ -20,6 +20,16 @@ Cette page présente les statistiques descriptives pour les bases de données ut
 library(dplyr)
 library(DT)
 
+
+top_firms <- base_brevets %>%
+  arrange(desc(n_patents)) %>%
+  head(5) %>%
+  select(firm_name, n_patents)
+
+datatable(top_firms, options = list(pageLength = 5, autoWidth = TRUE))
+
+
+
 base_brevets <- readRDS("data/base_brevets.rds")
 
 brevets_stats <- base_brevets %>%
