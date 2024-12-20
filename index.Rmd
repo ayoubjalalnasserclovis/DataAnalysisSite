@@ -1,31 +1,39 @@
-
 ---
-title: "Analyse des Données"
-output:
+title: "Accueil"
+output: 
   html_document:
     theme: flatly
-    highlight: textmate
     toc: false
     code_folding: hide
-    self_contained: true
 ---
 
-# Analyse des Données
+# Bienvenue sur le Site d'Analyse des Données
 
-## Relation entre l'Innovation (Brevet) et Salaire Moyen
+Bienvenue sur ce site où nous explorons diverses analyses réalisées à partir de notre base de données `base_emp_inno`. Découvrez des statistiques descriptives, des visualisations graphiques, et des insights détaillés sur les relations entre l'innovation, le salaire moyen, et bien d'autres facteurs.
 
-```{r analysis-plot, echo=FALSE, warning=FALSE, message=FALSE}
-library(dplyr)
-library(plotly)
-library(wordcloud2)
+---
 
-base_emp_inno <- readRDS("data/base_emp_inno.rds")
+## Navigation
 
-p <- plot_ly(base_emp_inno, x = ~n_patents, y = ~avg_wage,
-             type = 'scatter', mode = 'markers',
-             marker = list(size=10, opacity=0.6)) %>%
-  layout(title = "Relation entre Nombre de Brevets et Salaire Moyen",
-         xaxis = list(title = "Nombre de Brevets"),
-         yaxis = list(title = "Salaire Moyen"))
+Cliquez sur les liens ci-dessous pour accéder aux différentes sections du site :
 
-p
+- [Statistiques Descriptives](stats.html)
+- [Analyses Multiples](analysis.html)
+
+---
+
+## Points Forts
+
+Voici quelques analyses clés que vous trouverez sur ce site :
+
+1. **Top Firmes par Nombre de Brevets** : Découvrez quelles entreprises innovent le plus.
+2. **Relation entre Innovation et Salaire Moyen** : Une visualisation claire des corrélations entre brevets et rémunération.
+3. **Top Secteurs par Innovation** : Les industries les plus actives dans l'innovation.
+4. **Matrice de Corrélation** : Une vue d'ensemble des relations entre plusieurs variables clés.
+5. **Histogrammes et Boxplots** : Des visualisations pour comprendre la distribution des variables.
+
+Nous espérons que ces analyses vous fourniront des insights utiles !
+
+---
+
+Si vous avez des questions ou des suggestions, n'hésitez pas à nous contacter.
