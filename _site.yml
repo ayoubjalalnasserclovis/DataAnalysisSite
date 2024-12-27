@@ -11,9 +11,9 @@ navbar:
       href: analysis.html
 output:
   html_document:
-    css: styles.css
     theme: flatly
     highlight: textmate
-    toc: false
+    toc: true
+    toc_float: true
     code_folding: hide
-    self_contained: true
+    self_contained: false

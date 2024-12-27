@@ -1,24 +1,40 @@
-# stats.Rmd
 ---
-title: "Statistiques Descriptives"
-output:
+title: "3.2. Statistiques Descriptives"
+output: 
   html_document:
-    theme: flatly
-    highlight: textmate
-    toc: false
+    toc: true
+    toc_float: true
     code_folding: hide
-    self_contained: true
+    self_contained: false
 ---
 
-# Statistiques Descriptives
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 
-```{r, echo=FALSE, warning=FALSE, message=FALSE}
+# Load required packages
 library(dplyr)
 library(DT)
+```
 
-base_brevets <- readRDS("data/base_brevets.rds")
+```{r, include=FALSE}
+cat('<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">',
+    '<script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>',
+    '<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>',
+    sep = "\n")
+```
 
-brevets_stats <- base_brevets %>%
+# 3.2. Statistiques Descriptives
+
+## 1. Base Brevets
+
+### 1.1 Variables Numériques: n_patents
+
+```{r}
+# Charger la base
+base_brevets = readRDS("data/base_brevets.rds")
+
+# Calculer statistiques descriptives pour n_patents
+brevets_numeric = base_brevets %>%
   summarize(
     Min = min(n_patents, na.rm = TRUE),
     Median = median(n_patents, na.rm = TRUE),
@@ -28,10 +44,153 @@ brevets_stats <- base_brevets %>%
     NA_Count = sum(is.na(n_patents))
   )
 
-top_firms <- base_brevets %>%
-  arrange(desc(n_patents)) %>%
-  head(5) %>%
-  select(firm_name, n_patents)
+datatable(brevets_numeric, options = list(pageLength = 5, searching = FALSE))
+```
 
-datatable(brevets_stats, caption = "Statistiques N_Patents", options = list(pageLength=5, autoWidth=TRUE))
-datatable(top_firms, caption = "Top 5 Firmes par N_Patents", options = list(pageLength=5, autoWidth=TRUE))
+### 1.2 Variables Caractère (Top 5 valeurs ayant le plus grand nombre de brevets)
+
+#### a) firm_name
+
+```{r}
+top5_firm = base_brevets %>%
+  group_by(firm_name) %>%
+  summarize(total_patents = sum(n_patents, na.rm = TRUE)) %>%
+  arrange(desc(total_patents)) %>%
+  slice_head(n = 5)
+
+datatable(top5_firm, options = list(pageLength = 5, searching = FALSE))
+```
+
+#### b) ipc_main_desc
+
+```{r}
+top5_ipc = base_brevets %>%
+  group_by(ipc_main_desc) %>%
+  summarize(total_patents = sum(n_patents, na.rm = TRUE)) %>%
+  arrange(desc(total_patents)) %>%
+  slice_head(n = 5)
+
+datatable(top5_ipc, options = list(pageLength = 5, searching = FALSE))
+```
+
+#### c) addr_city_main
+
+```{r}
+top5_city = base_brevets %>%
+  group_by(addr_city_main) %>%
+  summarize(total_patents = sum(n_patents, na.rm = TRUE)) %>%
+  arrange(desc(total_patents)) %>%
+  slice_head(n = 5)
+
+datatable(top5_city, options = list(pageLength = 5, searching = FALSE))
+```
+
+#### d) addr_dept_main
+
+```{r}
+top5_dept = base_brevets %>%
+  group_by(addr_dept_main) %>%
+  summarize(total_patents = sum(n_patents, na.rm = TRUE)) %>%
+  arrange(desc(total_patents)) %>%
+  slice_head(n = 5)
+
+datatable(top5_dept, options = list(pageLength = 5, searching = FALSE))
+```
+
+## 2. Base Employés
+
+### 2.1 Variables Numériques: n_offres, avg_wage
+
+```{r}
+base_emp = readRDS("data/base_emp.rds")
+
+emp_numeric = base_emp %>%
+  summarize(
+    Min_n_offres = min(n_offres, na.rm = TRUE),
+    Median_n_offres = median(n_offres, na.rm = TRUE),
+    Max_n_offres = max(n_offres, na.rm = TRUE),
+    Mean_n_offres = mean(n_offres, na.rm = TRUE),
+    SD_n_offres = sd(n_offres, na.rm = TRUE),
+    NA_Count_n_offres = sum(is.na(n_offres)),
+    
+    Min_avg_wage = min(avg_wage, na.rm = TRUE),
+    Median_avg_wage = median(avg_wage, na.rm = TRUE),
+    Max_avg_wage = max(avg_wage, na.rm = TRUE),
+    Mean_avg_wage = mean(avg_wage, na.rm = TRUE),
+    SD_avg_wage = sd(avg_wage, na.rm = TRUE),
+    NA_Count_avg_wage = sum(is.na(avg_wage))
+  )
+
+datatable(emp_numeric, options = list(pageLength = 5, searching = FALSE))
+```
+
+### 2.2 Variables Caractère (Top 5 valeurs ayant le plus haut salaire moyen)
+
+#### a) firm_name
+
+```{r}
+top5_firm_emp = base_emp %>%
+  group_by(firm_name) %>%
+  summarize(avg_wage_firm = mean(avg_wage, na.rm = TRUE)) %>%
+  arrange(desc(avg_wage_firm)) %>%
+  slice_head(n = 5)
+
+datatable(top5_firm_emp, options = list(pageLength = 5, searching = FALSE))
+```
+
+#### b) sector_main
+
+```{r}
+top5_sector = base_emp %>%
+  group_by(sector_main) %>%
+  summarize(avg_wage_sector = mean(avg_wage, na.rm = TRUE)) %>%
+  arrange(desc(avg_wage_sector)) %>%
+  slice_head(n = 5)
+
+datatable(top5_sector, options = list(pageLength = 5, searching = FALSE))
+```
+
+#### c) addr_dept_main
+
+```{r}
+top5_dept_emp = base_emp %>%
+  group_by(addr_dept_main) %>%
+  summarize(avg_wage_dept = mean(avg_wage, na.rm = TRUE)) %>%
+  arrange(desc(avg_wage_dept)) %>%
+  slice_head(n = 5)
+
+datatable(top5_dept_emp, options = list(pageLength = 5, searching = FALSE))
+```
+
+## 3. Base Employés & Innovation
+
+### 3.1 Variables Numériques: n_patents, n_offres, avg_wage
+
+```{r}
+base_emp_inno = readRDS("data/base_emp_inno.rds")
+
+emp_inno_numeric = base_emp_inno %>%
+  summarize(
+    Min_n_patents = min(n_patents, na.rm = TRUE),
+    Median_n_patents = median(n_patents, na.rm = TRUE),
+    Max_n_patents = max(n_patents, na.rm = TRUE),
+    Mean_n_patents = mean(n_patents, na.rm = TRUE),
+    SD_n_patents = sd(n_patents, na.rm = TRUE),
+    NA_Count_n_patents = sum(is.na(n_patents)),
+    
+    Min_n_offres = min(n_offres, na.rm = TRUE),
+    Median_n_offres = median(n_offres, na.rm = TRUE),
+    Max_n_offres = max(n_offres, na.rm = TRUE),
+    Mean_n_offres = mean(n_offres, na.rm = TRUE),
+    SD_n_offres = sd(n_offres, na.rm = TRUE),
+    NA_Count_n_offres = sum(is.na(n_offres)),
+    
+    Min_avg_wage = min(avg_wage, na.rm = TRUE),
+    Median_avg_wage = median(avg_wage, na.rm = TRUE),
+    Max_avg_wage = max(avg_wage, na.rm = TRUE),
+    Mean_avg_wage = mean(avg_wage, na.rm = TRUE),
+    SD_avg_wage = sd(avg_wage, na.rm = TRUE),
+    NA_Count_avg_wage = sum(is.na(avg_wage))
+  )
+
+datatable(emp_inno_numeric, options = list(pageLength = 5, searching = FALSE))
