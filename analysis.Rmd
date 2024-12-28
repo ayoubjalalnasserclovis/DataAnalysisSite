@@ -116,29 +116,32 @@ if (nrow(df_corr) > 1) {
 
 **Commentaire**: Cette matrice de corrélation visualise les relations entre le nombre de brevets (`n_patents`), le nombre d'offres (`n_offres`) et le salaire moyen (`avg_wage`). Les cercles plus grands ou colorés indiquent des relations plus fortes.
 
-## 6. Régression linéaire: `n_patents` ~ `avg_wage`
+## 6. Répartition des entreprises par nombre de brevets
 
-```{r lm-patents-wage, echo=FALSE}
-lm1 <- base_emp_inno %>%
-  filter(!is.na(n_patents), !is.na(avg_wage)) %>%
-  lm(n_patents ~ avg_wage, data = .)
-
-summary(lm1)
+```{r patents-distribution, echo=FALSE}
+base_emp_inno %>%
+  filter(!is.na(n_patents)) %>%
+  ggplot(aes(x = n_patents)) +
+  geom_histogram(bins = 30, fill = "blue", color = "white") +
+  ggtitle("Répartition des Entreprises par Nombre de Brevets") +
+  labs(x = "Nombre de Brevets", y = "Nombre d'Entreprises")
 ```
 
-**Commentaire**: Cette régression examine l'effet du salaire moyen (`avg_wage`) sur le nombre de brevets (`n_patents`). Les coefficients et la significativité statistique sont présentés.
+**Commentaire**: Cet histogramme montre la répartition des entreprises selon le nombre de brevets déposés. Cela permet d'identifier les entreprises très innovantes.
 
-## 7. Régression linéaire: `n_offres` ~ `n_patents`
+## 7. Relation entre `n_offres` et `n_patents`
 
-```{r lm-offres-patents, echo=FALSE}
-lm2 <- base_emp_inno %>%
-  filter(!is.na(n_offres), !is.na(n_patents)) %>%
-  lm(n_offres ~ n_patents, data = .)
-
-summary(lm2)
+```{r lm-offres-patents-fix, echo=FALSE}
+base_emp_inno %>%
+  filter(!is.na(n_offres) & !is.na(n_patents)) %>%
+  ggplot(aes(x = n_patents, y = n_offres)) +
+  geom_point(alpha = 0.6) +
+  geom_smooth(method = "lm", se = TRUE, color = "blue") +
+  ggtitle("Relation entre n_offres et n_patents") +
+  labs(x = "Nombre de Brevets", y = "Nombre d'Offres")
 ```
 
-**Commentaire**: Cette régression analyse comment le nombre de brevets (`n_patents`) prédit le nombre d'offres d'emploi (`n_offres`).
+**Commentaire**: Ce graphique montre la relation entre le nombre de brevets (`n_patents`) et le nombre d'offres d'emploi (`n_offres`). Une régression linéaire est ajoutée pour visualiser la tendance générale.
 
 ## 8. Top 5 Départements par salaire moyen `avg_wage`
 
@@ -155,22 +158,22 @@ base_emp_inno %>%
 
 **Commentaire**: Ce tableau affiche les 5 départements avec les salaires moyens les plus élevés (`avg_wage`).
 
-## 9. Barplot des top 10 `ipc_main_desc` par fréquence
+## 9. Comparaison des salaires moyens par secteur
 
-```{r bar-ipc-main, echo=FALSE}
-ipc_count <- base_emp_inno %>%
-  filter(!is.na(ipc_main_desc)) %>%
-  count(ipc_main_desc, sort = TRUE) %>%
-  head(10)
-
-ggplot(ipc_count, aes(x = reorder(ipc_main_desc, n), y = n)) +
-  geom_col(fill = "steelblue") +
+```{r avg-wage-by-sector, echo=FALSE}
+base_emp_inno %>%
+  filter(!is.na(sector_main), !is.na(avg_wage)) %>%
+  group_by(sector_main) %>%
+  summarize(mean_wage = mean(avg_wage)) %>%
+  arrange(desc(mean_wage)) %>%
+  ggplot(aes(x = reorder(sector_main, mean_wage), y = mean_wage)) +
+  geom_bar(stat = "identity", fill = "green") +
   coord_flip() +
-  ggtitle("Top 10 ipc_main_desc par fréquence (sans NA)") +
-  labs(x = "IPC Main Description", y = "Count")
+  ggtitle("Comparaison des Salaires Moyens par Secteur") +
+  labs(x = "Secteur", y = "Salaire Moyen")
 ```
 
-**Commentaire**: Ce barplot montre les 10 descriptions principales IPC (`ipc_main_desc`) les plus fréquentes. Cela aide à identifier les domaines technologiques dominants.
+**Commentaire**: Ce barplot montre les salaires moyens par secteur. Cela permet d'identifier les secteurs les mieux rémunérés.
 
 ## 10. Distribution de `n_offres`
 
