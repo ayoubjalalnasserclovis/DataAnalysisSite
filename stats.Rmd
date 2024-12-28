@@ -1,190 +1,215 @@
 ---
 title: "3.2. Statistiques Descriptives"
-output: 
+output:
   html_document:
-    toc: true
-    toc_float: true
+    theme: flatly
+    highlight: textmate
+    toc: false
     code_folding: hide
-    self_contained: false
+    self_contained: true
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+# Introduction
 
-# Load required packages
-library(dplyr)
-library(DT)
-```
-
-```{r, include=FALSE}
-cat('<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">',
-    '<script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>',
-    '<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>',
-    sep = "\n")
-```
-
-# 3.2. Statistiques Descriptives
+Dans cette analyse, nous réaliserons des statistiques descriptives pour mieux comprendre les distributions des variables clés. Cela nous permettra d'identifier les tendances générales et de poser les bases d'une analyse approfondie. L'objectif est d'explorer les relations pertinentes de manière claire et structurée.
 
 ## 1. Base Brevets
 
+Nous commençons par regarder la distribution de la variable :n_pattents qui est le nombre de brevets déposé par l'entreprise entre 2010 et 2020.
+
 ### 1.1 Variables Numériques: n_patents
 
-```{r}
-# Charger la base
-base_brevets = readRDS("data/base_brevets.rds")
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+# Chargement des bibliothèques nécessaires pour l'analyse
+library(dplyr)
+library(DT)
+library(ggplot2)
+library(moments)
 
-# Calculer statistiques descriptives pour n_patents
-brevets_numeric = base_brevets %>%
-  summarize(
-    Min = min(n_patents, na.rm = TRUE),
-    Median = median(n_patents, na.rm = TRUE),
-    Max = max(n_patents, na.rm = TRUE),
-    Mean = mean(n_patents, na.rm = TRUE),
-    SD = sd(n_patents, na.rm = TRUE),
-    NA_Count = sum(is.na(n_patents))
-  )
+# Calculer le nombre total de valeurs manquantes dans la variable n_patents
+total_na_pattents = sum(is.na(base_brevets$n_patents))
+total_na_pattents
 
-datatable(brevets_numeric, options = list(pageLength = 5, searching = FALSE))
+# Résumé statistique pour la variable n_patents
+summary_stats = summary(base_brevets$n_patents)
+
+# Calcul des quantiles pour la distribution de n_patents
+quantiles = quantile(base_brevets$n_patents, probs = seq(0, 1, by = 0.1), na.rm = TRUE)
+
+# Calcul de l'écart-type pour mesurer la dispersion
+std_dev = sd(base_brevets$n_patents, na.rm = TRUE)
+
+# Calcul de l'asymétrie (skewness) de la distribution
+skewness_value = skewness(base_brevets$n_patents, na.rm = TRUE)
+
+# Calcul de l'aplatissement (kurtosis) de la distribution
+kurtosis_value = kurtosis(base_brevets$n_patents, na.rm = TRUE)
+
+
+# Affichage des résultats
+cat("Résumé statistique pour n_patents :", summary_stats, "\n")
+cat("Quantiles :", quantiles, "\n")
+cat("Écart-type :", std_dev, "\n")
+cat("Skewness :", skewness_value, "\n")
+cat("Kurtosis :", kurtosis_value, "\n")
 ```
+Nous observons une très grande volatilité de cette variable *273.4046*, avec nottament un compression des grande valeurs vers des déciles plus élevé en effet nous observons que la mediane (*4*) et la moyenne (*27.72*) sont significativement éloigné Cela ce confirme en observons les déciles  90% des entreprises ont au maximimum 25 brevets déposé. Les 10% d'entreprises restantent poussent la velaurs vers 14788 brevets déposés soit plus de 500 fois la médiane.Cette forte asymétrie (confirmée par une skewness de *29.9*) et ces outliers (confirmés par une kurtosis de *1164.9*) peuvent biaiser les moyennes et les tests statistiques classiques. Nous pouvons en conclure qu'une minorité d'entreprises déposent la globalité des brevets.
+
+
+Afin de simplifier l'analyse des variables (qualitatives) restantes nous allons selectionner les 5 entreprises avec le plus grand nombre de brevets.
+
+
+
 
 ### 1.2 Variables Caractère (Top 5 valeurs ayant le plus grand nombre de brevets)
 
-#### a) firm_name
+## a) firm_name
 
-```{r}
-top5_firm = base_brevets %>%
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+# Correction et normalisation des noms d'entreprises
+base_brevets = base_brevets %>%
+  mutate(firm_name = case_when(
+    firm_name == "commissariatnnergieatomiqueetauxenergiesalternatives" ~ toupper("Commissariat à l'énergie atomique et aux énergies alternatives"),
+    firm_name == "alcatellucent" ~ toupper("Alcatel-Lucent"),
+    firm_name == "centrenationaldelarecherchescientifique" ~ toupper("Centre National de la Recherche Scientifique (CNRS)"),
+    TRUE ~ firm_name
+  ))
+
+# Calcul des 5 entreprises ayant le plus grand nombre de brevets
+top_5_firm_name = base_brevets %>%
   group_by(firm_name) %>%
-  summarize(total_patents = sum(n_patents, na.rm = TRUE)) %>%
+  summarise(total_patents = sum(n_patents, na.rm = TRUE)) %>%
   arrange(desc(total_patents)) %>%
   slice_head(n = 5)
 
-datatable(top5_firm, options = list(pageLength = 5, searching = FALSE))
+# Affichage des résultats
+datatable(top_5_firm_name, options = list(pageLength = 5, searching = FALSE, dom = 't'))
 ```
 
-#### b) ipc_main_desc
+## b) ipc_main_desc
 
-```{r}
-top5_ipc = base_brevets %>%
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+# Calcul des descriptions principales IPC avec le plus grand nombre de brevets
+top_5_ipc_main_desc = base_brevets %>%
   group_by(ipc_main_desc) %>%
-  summarize(total_patents = sum(n_patents, na.rm = TRUE)) %>%
+  summarise(total_patents = sum(n_patents, na.rm = TRUE)) %>%
   arrange(desc(total_patents)) %>%
   slice_head(n = 5)
 
-datatable(top5_ipc, options = list(pageLength = 5, searching = FALSE))
+# Affichage des résultats
+datatable(top_5_ipc_main_desc, options = list(pageLength = 5, searching = FALSE, dom = 't'))
 ```
 
-#### c) addr_city_main
+## c) addr_city_main
 
-```{r}
-top5_city = base_brevets %>%
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+# Calcul des villes ayant le plus grand nombre de brevets
+top_5_addr_city_main = base_brevets %>%
   group_by(addr_city_main) %>%
-  summarize(total_patents = sum(n_patents, na.rm = TRUE)) %>%
+  summarise(total_patents = sum(n_patents, na.rm = TRUE)) %>%
   arrange(desc(total_patents)) %>%
   slice_head(n = 5)
 
-datatable(top5_city, options = list(pageLength = 5, searching = FALSE))
+# Affichage des résultats
+datatable(top_5_addr_city_main, options = list(pageLength = 5, searching = FALSE, dom = 't'))
 ```
 
-#### d) addr_dept_main
+## d) addr_dept_main
 
-```{r}
-top5_dept = base_brevets %>%
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+# Calcul des départements avec le plus grand nombre de brevets
+top_5_addr_dept_main = base_brevets %>%
   group_by(addr_dept_main) %>%
-  summarize(total_patents = sum(n_patents, na.rm = TRUE)) %>%
+  summarise(total_patents = sum(n_patents, na.rm = TRUE)) %>%
   arrange(desc(total_patents)) %>%
   slice_head(n = 5)
 
-datatable(top5_dept, options = list(pageLength = 5, searching = FALSE))
+# Affichage des résultats
+datatable(top_5_addr_dept_main, options = list(pageLength = 5, searching = FALSE, dom = 't'))
 ```
+
+D’après nos résultats, la majorité des brevets sont déposés en région parisienne. Cela reflète la réalité, Paris étant un pôle économique et technologique majeur.
 
 ## 2. Base Employés
 
 ### 2.1 Variables Numériques: n_offres, avg_wage
 
-```{r}
-base_emp = readRDS("data/base_emp.rds")
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+# Résumé statistique des variables n_offres et avg_wage
+summary_n_offres = summary(base_emp$n_offres)
+summary_avg_wage = summary(base_emp$avg_wage)
 
-emp_numeric = base_emp %>%
-  summarize(
-    Min_n_offres = min(n_offres, na.rm = TRUE),
-    Median_n_offres = median(n_offres, na.rm = TRUE),
-    Max_n_offres = max(n_offres, na.rm = TRUE),
-    Mean_n_offres = mean(n_offres, na.rm = TRUE),
-    SD_n_offres = sd(n_offres, na.rm = TRUE),
-    NA_Count_n_offres = sum(is.na(n_offres)),
-    
-    Min_avg_wage = min(avg_wage, na.rm = TRUE),
-    Median_avg_wage = median(avg_wage, na.rm = TRUE),
-    Max_avg_wage = max(avg_wage, na.rm = TRUE),
-    Mean_avg_wage = mean(avg_wage, na.rm = TRUE),
-    SD_avg_wage = sd(avg_wage, na.rm = TRUE),
-    NA_Count_avg_wage = sum(is.na(avg_wage))
-  )
-
-datatable(emp_numeric, options = list(pageLength = 5, searching = FALSE))
+# Affichage des résultats
+cat("Résumé pour n_offres :", summary_n_offres, "\n")
+cat("Résumé pour avg_wage :", summary_avg_wage, "\n")
 ```
 
 ### 2.2 Variables Caractère (Top 5 valeurs ayant le plus haut salaire moyen)
 
-#### a) firm_name
+a) firm_name
 
-```{r}
-top5_firm_emp = base_emp %>%
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+# Calcul des entreprises avec les plus hauts salaires moyens
+top_firms = base_emp %>%
   group_by(firm_name) %>%
-  summarize(avg_wage_firm = mean(avg_wage, na.rm = TRUE)) %>%
+  summarise(avg_wage_firm = mean(avg_wage, na.rm = TRUE)) %>%
   arrange(desc(avg_wage_firm)) %>%
   slice_head(n = 5)
 
-datatable(top5_firm_emp, options = list(pageLength = 5, searching = FALSE))
+# Affichage des résultats
+datatable(top_firms, options = list(pageLength = 5, searching = FALSE, dom = 't'))
 ```
 
-#### b) sector_main
+## b) sector_main
 
-```{r}
-top5_sector = base_emp %>%
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+# Calcul des secteurs avec les plus hauts salaires moyens
+top_sectors = base_emp %>%
   group_by(sector_main) %>%
-  summarize(avg_wage_sector = mean(avg_wage, na.rm = TRUE)) %>%
+  summarise(avg_wage_sector = mean(avg_wage, na.rm = TRUE)) %>%
   arrange(desc(avg_wage_sector)) %>%
   slice_head(n = 5)
 
-datatable(top5_sector, options = list(pageLength = 5, searching = FALSE))
+# Affichage des résultats
+datatable(top_sectors, options = list(pageLength = 5, searching = FALSE, dom = 't'))
 ```
 
-#### c) addr_dept_main
+## c) addr_dept_main
 
-```{r}
-top5_dept_emp = base_emp %>%
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+# Calcul des départements avec les plus hauts salaires moyens
+top_departments = base_emp %>%
   group_by(addr_dept_main) %>%
-  summarize(avg_wage_dept = mean(avg_wage, na.rm = TRUE)) %>%
+  summarise(avg_wage_dept = mean(avg_wage, na.rm = TRUE)) %>%
   arrange(desc(avg_wage_dept)) %>%
   slice_head(n = 5)
 
-datatable(top5_dept_emp, options = list(pageLength = 5, searching = FALSE))
+# Affichage des résultats
+datatable(top_departments, options = list(pageLength = 5, searching = FALSE, dom = 't'))
 ```
 
 ## 3. Base Employés & Innovation
 
 ### 3.1 Variables Numériques: n_patents, n_offres, avg_wage
 
-```{r}
-base_emp_inno = readRDS("data/base_emp_inno.rds")
-
-emp_inno_numeric = base_emp_inno %>%
-  summarize(
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+# Calcul des statistiques descriptives pour les variables combinées dans base_emp_inno
+summary_combined = base_emp_inno %>%
+  summarise(
     Min_n_patents = min(n_patents, na.rm = TRUE),
     Median_n_patents = median(n_patents, na.rm = TRUE),
     Max_n_patents = max(n_patents, na.rm = TRUE),
     Mean_n_patents = mean(n_patents, na.rm = TRUE),
     SD_n_patents = sd(n_patents, na.rm = TRUE),
     NA_Count_n_patents = sum(is.na(n_patents)),
-    
+
     Min_n_offres = min(n_offres, na.rm = TRUE),
     Median_n_offres = median(n_offres, na.rm = TRUE),
     Max_n_offres = max(n_offres, na.rm = TRUE),
     Mean_n_offres = mean(n_offres, na.rm = TRUE),
     SD_n_offres = sd(n_offres, na.rm = TRUE),
     NA_Count_n_offres = sum(is.na(n_offres)),
-    
+
     Min_avg_wage = min(avg_wage, na.rm = TRUE),
     Median_avg_wage = median(avg_wage, na.rm = TRUE),
     Max_avg_wage = max(avg_wage, na.rm = TRUE),
@@ -193,4 +218,9 @@ emp_inno_numeric = base_emp_inno %>%
     NA_Count_avg_wage = sum(is.na(avg_wage))
   )
 
-datatable(emp_inno_numeric, options = list(pageLength = 5, searching = FALSE))
+# Affichage des résultats sous forme de tableau interactif
+datatable(summary_combined, options = list(pageLength = 5, searching = FALSE, dom = 't'))
+```
+
+
+

@@ -57,6 +57,8 @@ base_emp_inno %>%
   kable_styling()
 ```
 
+**Commentaire**: Ce tableau résume les statistiques descriptives de la variable `n_patents`. Il indique la dispersion (écart-type), les valeurs extrêmes (minimum et maximum) ainsi que les tendances centrales (moyenne et médiane).
+
 ## 2. Histogramme de `avg_wage` (log-transformé)
 
 ```{r hist-log-avg-wage, echo=FALSE}
@@ -67,6 +69,8 @@ base_emp_inno %>%
   ggtitle("Distribution de Log(avg_wage) (sans NA)") +
   labs(x = "Log(Average Wage)", y = "Count")
 ```
+
+**Commentaire**: Cet histogramme montre la distribution des salaires moyens (`avg_wage`) en utilisant une transformation logarithmique pour réduire l'impact des valeurs extrêmes. Cela permet une meilleure visualisation de la répartition des salaires.
 
 ## 3. Boxplot de `avg_wage` par `sector_main`
 
@@ -79,6 +83,8 @@ base_emp_inno %>%
   ggtitle("Boxplot avg_wage par sector_main (sans NA)")
 ```
 
+**Commentaire**: Ce boxplot compare les salaires moyens (`avg_wage`) entre différents secteurs (`sector_main`). Il met en évidence les médianes, la dispersion, ainsi que les outliers pour chaque secteur.
+
 ## 4. Top 10 Firmes par `n_patents`
 
 ```{r top10-firms-patents, echo=FALSE}
@@ -90,6 +96,8 @@ base_emp_inno %>%
   kable() %>%
   kable_styling()
 ```
+
+**Commentaire**: Ce tableau liste les 10 entreprises ayant déposé le plus grand nombre de brevets (`n_patents`). Cela permet d'identifier les leaders en innovation.
 
 ## 5. Matrice de corrélation entre `n_patents`, `n_offres`, `avg_wage`
 
@@ -106,6 +114,8 @@ if (nrow(df_corr) > 1) {
 }
 ```
 
+**Commentaire**: Cette matrice de corrélation visualise les relations entre le nombre de brevets (`n_patents`), le nombre d'offres (`n_offres`) et le salaire moyen (`avg_wage`). Les cercles plus grands ou colorés indiquent des relations plus fortes.
+
 ## 6. Régression linéaire: `n_patents` ~ `avg_wage`
 
 ```{r lm-patents-wage, echo=FALSE}
@@ -116,6 +126,8 @@ lm1 <- base_emp_inno %>%
 summary(lm1)
 ```
 
+**Commentaire**: Cette régression examine l'effet du salaire moyen (`avg_wage`) sur le nombre de brevets (`n_patents`). Les coefficients et la significativité statistique sont présentés.
+
 ## 7. Régression linéaire: `n_offres` ~ `n_patents`
 
 ```{r lm-offres-patents, echo=FALSE}
@@ -125,6 +137,8 @@ lm2 <- base_emp_inno %>%
 
 summary(lm2)
 ```
+
+**Commentaire**: Cette régression analyse comment le nombre de brevets (`n_patents`) prédit le nombre d'offres d'emploi (`n_offres`).
 
 ## 8. Top 5 Départements par salaire moyen `avg_wage`
 
@@ -138,6 +152,8 @@ base_emp_inno %>%
   kable() %>%
   kable_styling()
 ```
+
+**Commentaire**: Ce tableau affiche les 5 départements avec les salaires moyens les plus élevés (`avg_wage`).
 
 ## 9. Barplot des top 10 `ipc_main_desc` par fréquence
 
@@ -154,6 +170,8 @@ ggplot(ipc_count, aes(x = reorder(ipc_main_desc, n), y = n)) +
   labs(x = "IPC Main Description", y = "Count")
 ```
 
+**Commentaire**: Ce barplot montre les 10 descriptions principales IPC (`ipc_main_desc`) les plus fréquentes. Cela aide à identifier les domaines technologiques dominants.
+
 ## 10. Distribution de `n_offres`
 
 ```{r hist-offres, echo=FALSE}
@@ -164,6 +182,8 @@ base_emp_inno %>%
   ggtitle("Distribution de n_offres (sans NA)") +
   labs(x = "Number of Offers", y = "Count")
 ```
+
+**Commentaire**: Cet histogramme montre la répartition du nombre d'offres d'emploi (`n_offres`) dans l'ensemble des données.
 
 ---
 

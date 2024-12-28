@@ -1,4 +1,4 @@
-# xxxx_src_utilities.R
+# xxxx_src_utilities.R 
 # Group Members: John Doe, Jane Smith
 
 # Extract the IPC-4 code from a full IPC string
@@ -26,22 +26,51 @@ get_top_n_codes <- function(df, code_col, desc_lookup, n=2) {
   )
 }
 
-# Clean and harmonize firm names
-clean_firm_name <- function(name) {
-  name <- tolower(name)
-  name <- gsub("\\s+", " ", name)
-  name <- trimws(name)
-  name <- gsub("[^a-z0-9\\s]", "", name)
-  # Mapping known variations
-  name_mapping = c(
+###############################################################################
+#                           ALGO DE RESSEMBLANCE                              #
+###############################################################################
+# Prépare le nom pour comparaison, similarité, matching
+clean_firm_name_for_similarity <- function(name) {
+  # Passage en minuscules
+  out <- tolower(name)
+  
+  # On supprime les espaces multiples
+  out <- gsub("\\s+", " ", out)
+  
+  # Trim (début/fin)
+  out <- trimws(out)
+  
+  # Retrait des caractères spéciaux sauf l’espace
+  out <- gsub("[^a-z0-9\\s]", "", out)
+  
+  # Mapping des variations connues
+  name_mapping <- c(
     "total energie" = "totalenergies",
-    "edf" = "electricite de france",
-    "saint gobain" = "saint-gobain"
+    "edf"           = "electricite de france",
+    "saint gobain"  = "saint-gobain"
   )
-  if (name %in% names(name_mapping)) {
-    name <- name_mapping[name]
+  
+  if (out %in% names(name_mapping)) {
+    out <- name_mapping[out]
   }
-  return(name)
+  
+  return(out)
+}
+
+###############################################################################
+#                          RENDU FINAL PROPRE                                 #
+###############################################################################
+# Nettoyage léger sans trop altérer l'écriture originale
+clean_firm_name <- function(name) {
+  # On retire juste les espaces de début/fin
+  new_name <- trimws(name)
+  
+  # On ne garde qu’un seul espace entre les mots
+  new_name <- gsub("\\s+", " ", new_name)
+  
+  # Ici, pas de passage en minuscules, ni de mapping “violent”
+  # On veut rester le plus proche de l’original, juste "propre"
+  return(new_name)
 }
 
 # Clean and extract a numeric salary from a salary string
