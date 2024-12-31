@@ -1,6 +1,5 @@
-# xxxx_patent.R
-# Group Members: John Doe, Jane Smith
-source("xxxx_src_utilities.R")
+
+source("najc_src_utilities.R")
 
 app_df <- read.table("DATA/202202_EPO_App_reg_small.txt", 
                      header=TRUE, sep=",", quote="\"",
