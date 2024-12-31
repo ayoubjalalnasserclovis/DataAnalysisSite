@@ -1,5 +1,4 @@
-# xxxx_src_utilities.R
-# Group Members: John Doe, Jane Smith
+
 
 # Extract the IPC-4 code from a full IPC string
 get_ipc4 <- function(ipc) {
